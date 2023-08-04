@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.flashcard_answer).visibility = View.INVISIBLE
         findViewById<TextView>(R.id.flashcard_answer1).visibility = View.INVISIBLE
         findViewById<TextView>(R.id.flashcard_answer2).visibility = View.INVISIBLE
-
     }
 
     private fun showAnswers () {

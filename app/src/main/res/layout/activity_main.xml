@@ -28,7 +28,6 @@
         android:background="#FBCEB1"
         android:textColor="#0000FF"
         android:text="Bill Clinton"
-        android:visibility="visible"
         android:textSize="40sp"
         tools:ignore="HardcodedText" />
 
@@ -42,7 +41,6 @@
         android:background="#FBCEB1"
         android:textColor="#0000FF"
         android:text="George H.W.Bush"
-        android:visibility="visible"
         android:textSize="40sp"
         tools:ignore="HardcodedText" />
 
@@ -56,7 +54,6 @@
         android:background="#FBCEB1"
         android:textColor="#0000FF"
         android:text="Barack Obama"
-        android:visibility="visible"
         android:textSize="40sp"
         tools:ignore="HardcodedText" />
 
@@ -64,7 +61,7 @@
         android:id="@+id/toggle_choices_visibility"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/icon_eye_lined"
+        android:src="@drawable/icon_eye_off_lined"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:contentDescription="@string/toggle_choices_visibility" />
