@@ -3,4 +3,6 @@
     <string name="who_is_the_44th_president_of_the_united_states">Who is the 44th President of the United States?</string>
     <string name="barack_obama">Barack Obama</string>
     <string name="toggle_choices_visibility" />
+    <string name="enter_question">Enter The Question Here</string>
+    <string name="enter_answer">Enter The Answer Here</string>
 </resources>
