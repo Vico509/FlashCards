@@ -5,7 +5,7 @@ A simple FlashCardApp designed to help users create, manage and review a collect
 
 ### App Walk-though
 
-<img src="YOUR_GIF_URL_HERE" width=200><br>
+<img src="https://github.com/Vico509/FlashCards/blob/master/lab3_required_flashcard.gif" width=200><br>
 
 ## Required
 - [x] User can create a card and still see their created card when the app is relaunched.
@@ -25,11 +25,10 @@ A simple FlashCardApp designed to help users create, manage and review a collect
 This is a simple flashcard app in Kotlin  that allows users to add questions and answers, and then display a question and its answer on the screen.
 
 ### App Walk-though
-`TODO://` Add the URL to your animated app walk-though `gif` in the image tag below. Make sure the gif actually renders and animates when viewing this README. (☝️ Remove this paragraph after after adding gif)
 
 <img src="https://github.com/Vico509/FlashCards/blob/master/card_lab2_required1.gif" width=200><br>
 
-`TODO://` In the User stories section below, add an `x` between the `-[ ]` like this `- [x]` for any user story you complete. (☝️ Remove this paragraph after after checking off user stories)
+
 
 ## Required
 - [x] Create New Project in Android Studio
