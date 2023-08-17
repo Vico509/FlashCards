@@ -23,10 +23,12 @@
         android:layout_height="50dp"
         android:gravity="center"
         android:layout_margin="7dp"
-        android:text="Bill Clinton"
+        android:text="Barack Obama"
         android:textSize="40sp"
         android:visibility="invisible"
         tools:ignore="HardcodedText" />
+
+
 
     <ImageView
         android:id="@+id/add_button_image"
@@ -38,6 +40,16 @@
         android:layout_marginBottom="23dp"
         android:contentDescription="@string/toggle_choices_visibility"
         android:src="@drawable/icon_button_add" />
+
+    <ImageView
+        android:id="@+id/next_button_image"
+        android:layout_width="80dp"
+        android:layout_height="130dp"
+        android:layout_margin="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/flashcard_question"
+        android:src="@drawable/icon_next_button"
+        android:contentDescription="@string/next_button"/>
 
 
 

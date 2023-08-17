@@ -5,4 +5,5 @@
     <string name="toggle_choices_visibility" />
     <string name="enter_question">Enter The Question Here</string>
     <string name="enter_answer">Enter The Answer Here</string>
+    <string name="next_button" />
 </resources>

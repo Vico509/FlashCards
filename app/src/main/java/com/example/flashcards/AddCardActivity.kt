@@ -1,13 +1,12 @@
 package com.example.flashcards
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import com.example.flashcards.R
+
 
 class AddCardActivity : AppCompatActivity() {
     //private var LaunchMainActivity = true
@@ -19,8 +18,6 @@ class AddCardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
 
-        //val ivToggleChoiceVisibility = findViewById<ImageView>(R.id.cancel_button_image)
-
         //Initialization of the View layout
         initializationViewLayout()
         // This extracts any data that was passed back from EndingActivity
@@ -28,15 +25,8 @@ class AddCardActivity : AppCompatActivity() {
 
         // Save the data
         saveData()
-//        fun launchComposeView() {
-//            val i = Intent(this@AddCardActivity, MainActivity::class.java)
-//            startActivity(i)
-//        }
 
-//        //ivToggleChoiceVisibility.setOnClickListener {
-//            //LaunchMainActivity = !LaunchMainActivity
-//            launchComposeView()
-//        }
+
 
         //Add OnClickListener for add and cancel button
         saveButton.setOnClickListener {
@@ -49,27 +39,30 @@ class AddCardActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
+        val data = Intent()
+
         val question = editQuestion.text.toString()
         val answer = editAnswer.text.toString()
 
         if (question.isNotEmpty() && answer.isNotEmpty()) {
-            val data = Intent()
             data.putExtra("question",question)
             data.putExtra("answer",answer)
+
             setResult(RESULT_OK,data)
             finish() // Close the AddCardActivity and return to MainActivity
-        } else {
-            // Show an error message in a Toast
-            Toast.makeText(
-                applicationContext,
-                "Must enter both Question and Answer!",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+      } //else {
+//            // Show an error message in a Toast
+//            Toast.makeText(
+//                applicationContext,
+//                "Must enter both Question and Answer!",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
 
 }
 
     private fun getData() {
+        // Extraction des valeurs de question et réponse depuis l'intent
         editQuestion.setText(intent.getStringExtra("question") ?: "")
         editAnswer.setText(intent.getStringExtra("answer") ?: "")
     }
@@ -84,5 +77,13 @@ class AddCardActivity : AppCompatActivity() {
 
 
 
+//        fun launchComposeView() {
+//            val i = Intent(this@AddCardActivity, MainActivity::class.java)
+//            startActivity(i)
+//        }
 
+//        //ivToggleChoiceVisibility.setOnClickListener {
+//            //LaunchMainActivity = !LaunchMainActivity
+//            launchComposeView()
+//        }
 
