@@ -1,5 +1,6 @@
 package com.example.flashcards
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
     private  lateinit var  nextButton : ImageView
     private var allFlashcards = mutableListOf<Flashcard>()
     private var currentCardDisplayIndex = 0
+    private lateinit var deleteButton : ImageView
+    private lateinit var editButton   : ImageView
+    private var cardToEdit: Flashcard? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,33 +45,32 @@ class MainActivity : AppCompatActivity() {
         allFlashcards = flashcardDatabase.getAllCards().toMutableList()
 
         nextButton.setOnClickListener {
-            // don't try to go to next card if you have no cards to begin with
-            if (allFlashcards.size == 0) {
-                // return here, so that the rest of the code in this onClickListener doesn't execute
+            // First check whether you have any maps to display
+            if (allFlashcards.isEmpty()) {
+                // If you have no cards, display a message or perform another appropriate action.
+                Snackbar.make(
+                    flashcardQuestion,
+                    "No cards available, add some first.",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
-            // return here, so that the rest of the code in this onClickListener doesn't execute
-            currentCardDisplayIndex++
 
-            // make sure we don't get an IndexOutOfBoundsError if we are viewing the last indexed card in our list
-            if (currentCardDisplayIndex >= allFlashcards.size){
-                Snackbar.make(
-                    flashcardQuestion,// This should be the TextView for displaying your flashcard question
-                    "You've reached the end of the cards, going back to start.",
-                    Snackbar.LENGTH_SHORT)
-                    .show()
-                currentCardDisplayIndex = 0
-            }
+            flashcardAnswer.visibility = View.INVISIBLE
+            flashcardQuestion.visibility = View.VISIBLE
 
-            // set the question and answer TextViews with data from the database
-            allFlashcards = flashcardDatabase.getAllCards().toMutableList()
-            val (question,answer) = allFlashcards[currentCardDisplayIndex]
+            // Get a random index
+            val randomIndex = getRandomNumber(0,allFlashcards.size -1)
 
+            // Obtain the map to be displayed using the random index
+            val (question,answer) = allFlashcards[randomIndex]
+
+            // Display the question and answer
             flashcardAnswer.text = answer
             flashcardQuestion.text = question
 
-            // Reinitialize the inital State
-            toggleAnswerVisibility()
+//            // Reset to initial state
+//            toggleAnswerVisibility()
         }
 
 
@@ -98,13 +101,45 @@ class MainActivity : AppCompatActivity() {
 //            launchComposeView()
 //        }
 
+        deleteButton.setOnClickListener {
+
+            deleteCard()
+        }
+
         addButton.setOnClickListener {
             val intent = Intent(this, AddCardActivity::class.java)
             resultLauncher.launch(intent)
         }
 
+
    }
 
+    @SuppressLint("SetTextI18n")
+    private fun deleteCard() {
+        val flashcardQuestionToDelete = flashcardQuestion.text.toString()
+        flashcardDatabase.deleteCard(flashcardQuestionToDelete)
+
+        // Update the allFlashcards list after deletion
+        allFlashcards = flashcardDatabase.getAllCards().toMutableList()
+
+        // Update currentCardDisplayedIndex if necessary
+        if (currentCardDisplayIndex >= allFlashcards.size){
+            currentCardDisplayIndex = 0
+        }
+
+        // Update the user interface with the new card
+        if (allFlashcards.isNotEmpty()) {
+            val (question,answer) = allFlashcards[currentCardDisplayIndex]
+            flashcardAnswer.text = answer
+            flashcardQuestion.text = question
+        } else {
+            // If there are no cards left, display an "empty" status
+            flashcardAnswer.text = "Add a card!"
+            flashcardQuestion.text = ""
+
+        }
+
+    }
 
 
 //    private fun startAddCardActivity() {
@@ -140,12 +175,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // returns a random number between minNumber and maxNumber, inclusive.
+// for example, if i called getRandomNumber(1, 3), there's an equal chance of it returning either 1, 2, or 3.
+   private fun getRandomNumber(minNumber: Int, maxNumber: Int): Int {
+        return (minNumber..maxNumber).random() // generated random from 0 to 10 included
+    }
+
     private fun initializeViews() {
         flashcardQuestion = findViewById(R.id.flashcard_question)
         flashcardAnswer = findViewById(R.id.flashcard_answer)
         addButton = findViewById(R.id.add_button_image)
+        editButton = findViewById(R.id.edit_button_image)
         nextButton = findViewById(R.id.next_button_image)
+        deleteButton = findViewById(R.id.delete_button_image)
     }
+
 
     // This extracts any data that was passed back from AddCardActivity
     private val resultLauncher = registerForActivityResult(
@@ -181,6 +225,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    // Managing the results of the card modification activity
 }
 
 //        flashcardAnswer.setOnClickListener {

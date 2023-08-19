@@ -51,6 +51,28 @@
         android:src="@drawable/icon_next_button"
         android:contentDescription="@string/next_button"/>
 
+    <ImageView
+        android:id="@+id/delete_button_image"
+        android:layout_width="80dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/flashcard_question"
+        android:contentDescription="@string/delete_button"
+        android:src="@drawable/icon_trash_button" />
+
+    <ImageView
+        android:id="@+id/edit_button_image"
+        android:layout_width="80dp"
+        android:layout_height="115dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:contentDescription="@string/edit_button"
+        android:src="@drawable/icon_edit_button" />
+
 
 
 <!--    <TextView-->

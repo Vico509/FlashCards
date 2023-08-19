@@ -6,4 +6,6 @@
     <string name="enter_question">Enter The Question Here</string>
     <string name="enter_answer">Enter The Answer Here</string>
     <string name="next_button" />
+    <string name="delete_button" />
+    <string name="edit_button" />
 </resources>
