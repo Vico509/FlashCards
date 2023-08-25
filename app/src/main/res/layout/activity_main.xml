@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
+
 
     <TextView
         android:id="@+id/flashcard_question"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_margin="7dp"
         android:gravity="center"
         android:elevation="5dp"
         android:textColor="#000000"
@@ -43,35 +46,36 @@
 
     <ImageView
         android:id="@+id/next_button_image"
-        android:layout_width="80dp"
+        android:layout_width="40dp"
         android:layout_height="130dp"
-        android:layout_margin="5dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="23dp"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/flashcard_question"
         android:src="@drawable/icon_next_button"
         android:contentDescription="@string/next_button"/>
 
-    <ImageView
-        android:id="@+id/delete_button_image"
-        android:layout_width="80dp"
-        android:layout_height="130dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/flashcard_question"
-        android:contentDescription="@string/delete_button"
-        android:src="@drawable/icon_trash_button" />
+<!--    <ImageView-->
+<!--        android:id="@+id/delete_button_image"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="130dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_below="@id/flashcard_question"-->
+<!--        android:contentDescription="@string/delete_button"-->
+<!--        android:src="@drawable/icon_trash_button" />-->
 
-    <ImageView
-        android:id="@+id/edit_button_image"
-        android:layout_width="80dp"
-        android:layout_height="115dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:contentDescription="@string/edit_button"
-        android:src="@drawable/icon_edit_button" />
+<!--    <ImageView-->
+<!--        android:id="@+id/edit_button_image"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="115dp"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="5dp"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:layout_marginEnd="5dp"-->
+<!--        android:layout_marginBottom="5dp"-->
+<!--        android:contentDescription="@string/edit_button"-->
+<!--        android:src="@drawable/icon_edit_button" />-->
 
 
 

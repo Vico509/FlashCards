@@ -7,14 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.animation.Animation
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.snackbar.Snackbar
+import kotlin.math.hypot
+import android.view.animation.TranslateAnimation
+import android.os.Handler
+import androidx.appcompat.widget.Toolbar
 
 class MainActivity : AppCompatActivity() {
-    //private var isShowingAnswers = true
+    private var isShowingAnswers = false
     //private var lauchNewCardActivity = true
     private lateinit var flashcardQuestion : TextView
     private lateinit var flashcardAnswer : TextView
@@ -23,9 +29,10 @@ class MainActivity : AppCompatActivity() {
     private  lateinit var  nextButton : ImageView
     private var allFlashcards = mutableListOf<Flashcard>()
     private var currentCardDisplayIndex = 0
-    private lateinit var deleteButton : ImageView
-    private lateinit var editButton   : ImageView
+    //private lateinit var deleteButton : ImageView
+    //private lateinit var editButton   : ImageView
     private var cardToEdit: Flashcard? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         flashcardDatabase = FlashcardDatabase(this)
         allFlashcards = flashcardDatabase.getAllCards().toMutableList()
 
+        // Set the initial card content
+        showNextCard()
+
         nextButton.setOnClickListener {
             // First check whether you have any maps to display
             if (allFlashcards.isEmpty()) {
@@ -56,33 +66,66 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            flashcardAnswer.visibility = View.INVISIBLE
-            flashcardQuestion.visibility = View.VISIBLE
+            val currentCardOutAnimation = TranslateAnimation(0f, -flashcardQuestion.width.toFloat(), 0f, 0f)
+            currentCardOutAnimation.duration = 500
 
-            // Get a random index
-            val randomIndex = getRandomNumber(0,allFlashcards.size -1)
+            currentCardOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
 
-            // Obtain the map to be displayed using the random index
-            val (question,answer) = allFlashcards[randomIndex]
+                override fun onAnimationEnd(animation: Animation?) {
+                    // Hide the current card and show the next card
+                    toggleAnswerVisibility()
+                    showNextCard()
 
-            // Display the question and answer
-            flashcardAnswer.text = answer
-            flashcardQuestion.text = question
+                    // Create an animation to bring in the new card
+                    val newCardInAnimation = TranslateAnimation(flashcardQuestion.width.toFloat(), 0f, 0f, 0f)
+                    newCardInAnimation.duration = 500
+                    flashcardQuestion.startAnimation(newCardInAnimation)
+                }
 
-//            // Reset to initial state
-//            toggleAnswerVisibility()
-        }
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+
+            flashcardQuestion.startAnimation(currentCardOutAnimation)
+
+    }
+
+
+
+
+
 
 
 
         // if condition for verify if the list of card is empty or not, if the list of card not empty you can display the memory save.
-        if (allFlashcards.size > 0){
-            flashcardQuestion.text = allFlashcards[0].question
-            flashcardAnswer.text = allFlashcards[0].answer
-        }
+//        if (allFlashcards.size > 0){
+//            flashcardQuestion.text = allFlashcards[0].question
+//            flashcardAnswer.text = allFlashcards[0].answer
+//        }
 
         flashcardQuestion.setOnClickListener {
-            toggleAnswerVisibility()
+            if (!isShowingAnswers) {
+                val answerSideView = findViewById<View>(R.id.flashcard_answer)
+
+                // get the center for the clipping circle
+                val cx = answerSideView.width / 2
+                val cy = answerSideView.height / 2
+
+                // get the final radius for the clipping circle
+                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+
+                // create the animator for this view (the start radius is zero)
+                val anim = ViewAnimationUtils.createCircularReveal(answerSideView, cx, cy, 0f, finalRadius)
+
+                // hide the question and show the answer to prepare for playing the animation!
+              toggleAnswerVisibility()
+
+                anim.duration = 500
+                anim.start()
+            } else {
+                // If the answer is already showing, clicking on the question should show the next card.
+                showNextCard()
+            }
         }
 
 
@@ -101,45 +144,61 @@ class MainActivity : AppCompatActivity() {
 //            launchComposeView()
 //        }
 
-        deleteButton.setOnClickListener {
-
-            deleteCard()
-        }
+//        deleteButton.setOnClickListener {
+//
+//            deleteCard()
+//        }
 
         addButton.setOnClickListener {
             val intent = Intent(this, AddCardActivity::class.java)
             resultLauncher.launch(intent)
+            overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
 
 
    }
 
-    @SuppressLint("SetTextI18n")
-    private fun deleteCard() {
-        val flashcardQuestionToDelete = flashcardQuestion.text.toString()
-        flashcardDatabase.deleteCard(flashcardQuestionToDelete)
+    private fun showNextCard() {
+        val currentCardIndex = currentCardDisplayIndex
+        val nextCardIndex = (currentCardIndex + 1) % allFlashcards.size
+        val nextCard = allFlashcards[nextCardIndex]
 
-        // Update the allFlashcards list after deletion
-        allFlashcards = flashcardDatabase.getAllCards().toMutableList()
+        flashcardQuestion.text = nextCard.question
+        flashcardAnswer.text = nextCard.answer
 
-        // Update currentCardDisplayedIndex if necessary
-        if (currentCardDisplayIndex >= allFlashcards.size){
-            currentCardDisplayIndex = 0
-        }
+        flashcardAnswer.visibility = View.INVISIBLE
+        flashcardQuestion.visibility = View.VISIBLE
+        isShowingAnswers = false
 
-        // Update the user interface with the new card
-        if (allFlashcards.isNotEmpty()) {
-            val (question,answer) = allFlashcards[currentCardDisplayIndex]
-            flashcardAnswer.text = answer
-            flashcardQuestion.text = question
-        } else {
-            // If there are no cards left, display an "empty" status
-            flashcardAnswer.text = "Add a card!"
-            flashcardQuestion.text = ""
-
-        }
-
+        currentCardDisplayIndex = nextCardIndex
     }
+
+//    @SuppressLint("SetTextI18n")
+//    private fun deleteCard() {
+//        val flashcardQuestionToDelete = flashcardQuestion.text.toString()
+//        flashcardDatabase.deleteCard(flashcardQuestionToDelete)
+//
+//        // Update the allFlashcards list after deletion
+//        allFlashcards = flashcardDatabase.getAllCards().toMutableList()
+//
+//        // Update currentCardDisplayedIndex if necessary
+//        if (currentCardDisplayIndex >= allFlashcards.size){
+//            currentCardDisplayIndex = 0
+//        }
+//
+//        // Update the user interface with the new card
+//        if (allFlashcards.isNotEmpty()) {
+//            val (question,answer) = allFlashcards[currentCardDisplayIndex]
+//            flashcardAnswer.text = answer
+//            flashcardQuestion.text = question
+//        } else {
+//            // If there are no cards left, display an "empty" status
+//            flashcardAnswer.text = "Add a card!"
+//            flashcardQuestion.text = ""
+//
+//        }
+//
+//    }
 
 
 //    private fun startAddCardActivity() {
@@ -173,6 +232,8 @@ class MainActivity : AppCompatActivity() {
             flashcardQuestion.visibility = View.INVISIBLE
             flashcardAnswer.visibility = View.VISIBLE
         }
+
+        //isShowingAnswers = !isShowingAnswers
     }
 
     // returns a random number between minNumber and maxNumber, inclusive.
@@ -185,9 +246,9 @@ class MainActivity : AppCompatActivity() {
         flashcardQuestion = findViewById(R.id.flashcard_question)
         flashcardAnswer = findViewById(R.id.flashcard_answer)
         addButton = findViewById(R.id.add_button_image)
-        editButton = findViewById(R.id.edit_button_image)
+        //editButton = findViewById(R.id.edit_button_image)
         nextButton = findViewById(R.id.next_button_image)
-        deleteButton = findViewById(R.id.delete_button_image)
+        //deleteButton = findViewById(R.id.delete_button_image)
     }
 
 
