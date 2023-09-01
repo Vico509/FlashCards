@@ -1,0 +1,26 @@
+<!-- res/anim/card_flip.xml -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Rotate the card from 0 to 90 degrees (halfway) on the Y-axis. -->
+    <rotate
+        android:fromDegrees="0"
+        android:toDegrees="90"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:duration="200"
+        android:interpolator="@android:interpolator/accelerate_decelerate" />
+    <!-- Hide the front card view when the rotation is at 90 degrees. -->
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:startOffset="100"
+        android:duration="100" />
+    <!-- Rotate the card from -90 to 0 degrees (back to original position) on the Y-axis. -->
+    <rotate
+        android:fromDegrees="-90"
+        android:toDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="200"
+        android:duration="200"
+        android:interpolator="@android:interpolator/accelerate_decelerate" />
+</set>

@@ -7,6 +7,18 @@
 
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:elevation="5dp"
+        android:gravity="center"
+        android:textColor="#ea769b"
+        android:textSize="30sp" />
+
+
 
     <TextView
         android:id="@+id/flashcard_question"
@@ -16,6 +28,8 @@
         android:gravity="center"
         android:elevation="5dp"
         android:textColor="#000000"
+        android:layout_below="@id/timer"
+        android:background="@drawable/card_background"
         android:text="Who is the 44th President of the United States?"
         android:textSize="40sp"
         tools:ignore="HardcodedText" />
@@ -23,9 +37,12 @@
     <TextView
         android:id="@+id/flashcard_answer"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/timer"
         android:gravity="center"
         android:layout_margin="7dp"
+        android:elevation="5dp"
+        android:background="@drawable/card_background"
         android:text="Barack Obama"
         android:textSize="40sp"
         android:visibility="invisible"
@@ -35,7 +52,7 @@
 
     <ImageView
         android:id="@+id/add_button_image"
-        android:layout_width="100dp"
+        android:layout_width="40dp"
         android:layout_height="86dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"

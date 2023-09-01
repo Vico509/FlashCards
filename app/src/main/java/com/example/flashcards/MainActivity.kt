@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -17,10 +18,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlin.math.hypot
 import android.view.animation.TranslateAnimation
 import android.os.Handler
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.Toolbar
 
 class MainActivity : AppCompatActivity() {
-    private var isShowingAnswers = false
+    private var isShowingAnswers = true
     //private var lauchNewCardActivity = true
     private lateinit var flashcardQuestion : TextView
     private lateinit var flashcardAnswer : TextView
@@ -29,9 +32,12 @@ class MainActivity : AppCompatActivity() {
     private  lateinit var  nextButton : ImageView
     private var allFlashcards = mutableListOf<Flashcard>()
     private var currentCardDisplayIndex = 0
+    private lateinit var flashTimer : TextView
     //private lateinit var deleteButton : ImageView
     //private lateinit var editButton   : ImageView
     private var cardToEdit: Flashcard? = null
+    private var countDownTimer: CountDownTimer? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +53,25 @@ class MainActivity : AppCompatActivity() {
         // Look up the views in layout
         initializeViews()
 
+        // Set the camera distance for the views
+        flashcardQuestion.cameraDistance = 25000f
+        flashcardAnswer.cameraDistance = 25000f
+
         // Initialization of flashcardDatabase variable
         flashcardDatabase = FlashcardDatabase(this)
         allFlashcards = flashcardDatabase.getAllCards().toMutableList()
 
         // Set the initial card content
         showNextCard()
+
+        countDownTimer = object : CountDownTimer(16000, 1000) {
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                flashTimer.text = "" + millisUntilFinished / 1000
+            }
+
+            override fun onFinish() {}
+        }
 
         nextButton.setOnClickListener {
             // First check whether you have any maps to display
@@ -65,28 +84,32 @@ class MainActivity : AppCompatActivity() {
                 ).show()
                 return@setOnClickListener
             }
+            // Show the next card without displaying the answer
+            showNextCard()
 
-            val currentCardOutAnimation = TranslateAnimation(0f, -flashcardQuestion.width.toFloat(), 0f, 0f)
-            currentCardOutAnimation.duration = 500
 
-            currentCardOutAnimation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
 
-                override fun onAnimationEnd(animation: Animation?) {
-                    // Hide the current card and show the next card
-                    toggleAnswerVisibility()
-                    showNextCard()
-
-                    // Create an animation to bring in the new card
-                    val newCardInAnimation = TranslateAnimation(flashcardQuestion.width.toFloat(), 0f, 0f, 0f)
-                    newCardInAnimation.duration = 500
-                    flashcardQuestion.startAnimation(newCardInAnimation)
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-
-            flashcardQuestion.startAnimation(currentCardOutAnimation)
+//            val currentCardOutAnimation = TranslateAnimation(0f, -flashcardQuestion.width.toFloat(), 0f, 0f)
+//            currentCardOutAnimation.duration = 500
+//
+//            currentCardOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+//                override fun onAnimationStart(animation: Animation?) {}
+//
+//                override fun onAnimationEnd(animation: Animation?) {
+//                    // Hide the current card and show the next card
+//                    toggleAnswerVisibility()
+//                    showNextCard()
+//
+//                    // Create an animation to bring in the new card
+//                    val newCardInAnimation = TranslateAnimation(flashcardQuestion.width.toFloat(), 0f, 0f, 0f)
+//                    newCardInAnimation.duration = 500
+//                    flashcardQuestion.startAnimation(newCardInAnimation)
+//                }
+//
+//                override fun onAnimationRepeat(animation: Animation?) {}
+//            })
+//
+//            flashcardQuestion.startAnimation(currentCardOutAnimation)
 
     }
 
@@ -104,28 +127,32 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         flashcardQuestion.setOnClickListener {
-            if (!isShowingAnswers) {
-                val answerSideView = findViewById<View>(R.id.flashcard_answer)
+          flipCard()
 
-                // get the center for the clipping circle
-                val cx = answerSideView.width / 2
-                val cy = answerSideView.height / 2
 
-                // get the final radius for the clipping circle
-                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
-                // create the animator for this view (the start radius is zero)
-                val anim = ViewAnimationUtils.createCircularReveal(answerSideView, cx, cy, 0f, finalRadius)
+//
+//                // get the center for the clipping circle
+//                val cx = answerSideView.width / 2
+//                val cy = answerSideView.height / 2
+//
+//                // get the final radius for the clipping circle
+//                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+//
+//                // create the animator for this view (the start radius is zero)
+//                val anim = ViewAnimationUtils.createCircularReveal(answerSideView, cx, cy, 0f, finalRadius)
+//
+//                // hide the question and show the answer to prepare for playing the animation!
+//              toggleAnswerVisibility()
+//
+//                anim.duration = 500
+//                anim.start()
+//            } else {
+//                // If the answer is already showing, clicking on the question should show the next card.
+//                showNextCard()
 
-                // hide the question and show the answer to prepare for playing the animation!
-              toggleAnswerVisibility()
 
-                anim.duration = 500
-                anim.start()
-            } else {
-                // If the answer is already showing, clicking on the question should show the next card.
-                showNextCard()
-            }
+
         }
 
 
@@ -158,6 +185,27 @@ class MainActivity : AppCompatActivity() {
 
    }
 
+    private fun flipCard() {
+        if (!isShowingAnswers) {
+            // Flip the card to show the answer side.
+            val flipAnimation = AnimationUtils.loadAnimation(this, R.anim.card_flip)
+            flipAnimation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    // Hide the question side and show the answer side.
+                    toggleAnswerVisibility()
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            flashcardQuestion.startAnimation(flipAnimation)
+        } else {
+            // If the answer is already showing, clicking on the question should show the next card.
+            showNextCard()
+        }
+    }
+
     private fun showNextCard() {
         val currentCardIndex = currentCardDisplayIndex
         val nextCardIndex = (currentCardIndex + 1) % allFlashcards.size
@@ -171,6 +219,14 @@ class MainActivity : AppCompatActivity() {
         isShowingAnswers = false
 
         currentCardDisplayIndex = nextCardIndex
+
+        startTimer()
+        //flipCard()
+    }
+
+    private fun startTimer() {
+        countDownTimer?.cancel()
+        countDownTimer?.start()
     }
 
 //    @SuppressLint("SetTextI18n")
@@ -249,6 +305,7 @@ class MainActivity : AppCompatActivity() {
         //editButton = findViewById(R.id.edit_button_image)
         nextButton = findViewById(R.id.next_button_image)
         //deleteButton = findViewById(R.id.delete_button_image)
+        flashTimer = findViewById(R.id.timer)
     }
 
 
