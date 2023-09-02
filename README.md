@@ -6,7 +6,7 @@ Basic Flashcard app that can display a question, and on tap display the answer t
 ### App Walk-though
 
 
-<img src="https://github.com/Vico509/FlashCards/blob/master/flashcardlab4_required.gif" width=200><br>
+<img src="https://github.com/Vico509/FlashCards/blob/master/lab4optionnal.gif" width=200><br>
 
 ## Required
 - [x] User sees a transition animation when going from the main screen to the add card screen.
